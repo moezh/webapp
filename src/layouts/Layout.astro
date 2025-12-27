@@ -1,0 +1,83 @@
+---
+import "../styles/global.css";
+
+import Logo from "../../public/logo.svg?raw";
+import Favicon from "../../public/favicon.svg?raw";
+import DarkModeSync from "../components/DarkModeSync.astro";
+import DarkModeButton from "../components/DarkModeButton.astro";
+import IntersectionObserver from "../components/IntersectionObserver.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  schema?: any;
+}
+
+const url = Astro.url;
+const { title, description, schema } = Astro.props;
+const titleLimited = title.length > 53 ? title.slice(0, 50) + "..." : title;
+const descriptionLimited =
+  description && description.length > 153
+    ? description.slice(0, 150) + "..."
+    : description;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href=`data:image/svg+xml,${Favicon}`
+      sizes="any"
+    />
+    <link rel="sitemap" href="/sitemap.xml" />
+    <link rel="canonical" href={url.href} />
+    <title>{titleLimited}</title>
+    {description && <meta name="description" content={descriptionLimited} />}
+    <meta property="og:title" content={titleLimited} />
+    <meta property="og:description" content={descriptionLimited} />
+    <meta property="og:url" content={url.href} />
+    <meta property="og:type" content="website" />
+    {
+      schema && (
+        <script
+          is:inline
+          type="application/ld+json"
+          set:html={JSON.stringify(schema)}
+        />
+      )
+    }
+    <DarkModeSync />
+  </head>
+  <body>
+    <div class="flex flex-col min-h-screen">
+      <header class="shrink container py-4 flex items-start">
+        <div class="shrink">
+          <a href=`/` aria-label="Homepage">
+            <div class="flex flex-col items-start">
+              <div class="logo" set:html={Logo} />
+            </div>
+          </a>
+        </div>
+        <div class="grow"></div>
+        <div class="shrink flex gap-2 gap-x-4">
+          <DarkModeButton />
+        </div>
+      </header>
+      <main class="grow flex flex-col justify-center pb-8">
+        <slot />
+      </main>
+      <footer class="shrink container flex flex-col items-center py-4">
+        <div class="pt-2">
+          <i>
+            Copyright © {new Date().getFullYear()} - All right reserved.
+          </i>
+        </div>
+      </footer>
+      <IntersectionObserver />
+    </div>
+  </body>
+</html>

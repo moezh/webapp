@@ -1,0 +1,11 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { sql } from "bun";
+const response = await sql`SELECT NOW();`;
+---
+
+<Layout title="Homepage" description="Homepage">
+  <div class="container">
+    <p>{response[0].now}</p>
+  </div>
+</Layout>

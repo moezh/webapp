@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS test (
+  id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  test VARCHAR(10) UNIQUE NOT NULL
+);
+
+INSERT INTO test (test)
+VALUES
+  ('alpha'),
+  ('beta'),
+  ('gamma');

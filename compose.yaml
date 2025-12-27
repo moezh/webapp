@@ -1,0 +1,42 @@
+name: webapp-${ENVIRONMENT}
+services:
+  app:
+    build:
+      target: ${ENVIRONMENT}
+    container_name: app-${ENVIRONMENT}
+    environment:
+      NODE_ENV: ${ENVIRONMENT}
+      DATABASE_URL: postgres://postgres:${DB_PASSWORD}@db:5432/database
+      ASTRO_TELEMETRY_DISABLED: 1
+    volumes:
+      - .:/webapp
+      - nodemodules:/webapp/node_modules
+    ports:
+      - "80:4321"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+  db:
+    image: postgres:18-alpine
+    container_name: db-${ENVIRONMENT}
+    environment:
+      POSTGRES_DB: database
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./initdb:/docker-entrypoint-initdb.d
+      - pgdata:/var/lib/postgresql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 1s
+      timeout: 1s
+      retries: 30
+    restart: unless-stopped
+volumes:
+  pgdata:
+    name: pgdata-${ENVIRONMENT}
+  nodemodules:
+    name: nodemodules-${ENVIRONMENT}

@@ -1,0 +1,58 @@
+name: Deploy
+on:
+  push:
+    branches: [main]
+jobs:
+  deploy_prod:
+    name: Deploy to production
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to US server using ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.US_HOST }}
+          username: ${{ secrets.US_USER }}
+          key: ${{ secrets.US_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd ~/webapp
+            git checkout main
+            git fetch --all
+            git reset --hard origin/main
+            export BUN_INSTALL="$HOME/.bun"
+            export PATH="$BUN_INSTALL/bin:$PATH"
+            if command -v bun >/dev/null 2>&1; then
+              bun upgrade
+            else
+              if ! command -v unzip >/dev/null 2>&1; then
+                sudo apt-get update && sudo apt-get install -y unzip
+              fi
+              curl -fsSL https://bun.sh/install | bash
+            fi
+            bun --version
+            bun run prod
+      - name: Deploy to FR server using ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.FR_HOST }}
+          username: ${{ secrets.FR_USER }}
+          key: ${{ secrets.FR_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd ~/webapp
+            git checkout main
+            git fetch --all
+            git reset --hard origin/main
+            export BUN_INSTALL="$HOME/.bun"
+            export PATH="$BUN_INSTALL/bin:$PATH"
+            if command -v bun >/dev/null 2>&1; then
+              bun upgrade
+            else
+              if ! command -v unzip >/dev/null 2>&1; then
+                sudo apt-get update && sudo apt-get install -y unzip
+              fi
+              curl -fsSL https://bun.sh/install | bash
+            fi
+            bun --version
+            bun run prod
