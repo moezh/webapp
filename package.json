@@ -1,23 +1,17 @@
 {
   "name": "webapp",
-  "type": "module",
+  "private": true,
+  "workspaces": [
+    "workspaces/*"
+  ],
   "scripts": {
-    "env:dev": "bun create-env.ts development",
-    "env:prod": "bun create-env.ts production",
-    "astro": "astro",
-    "app:dev": "astro dev",
-    "app:prod": "rm -rf dist && astro build && bun ./dist/server/entry.mjs",
-    "stop": "docker compose down && rm -rf .astro dist node_modules",
-    "dev": "bun run stop && bun run env:dev && bun install && docker compose up --build",
-    "prod": "bun run stop && bun run env:prod && bun install && docker compose up --build -d"
-  },
-  "dependencies": {
-    "@astrojs/node": "latest",
-    "@tailwindcss/vite": "latest",
-    "astro": "latest",
-    "tailwindcss": "latest"
+    "stop": "docker compose down",
+    "dev": "bun run stop && bun install && bun create-env.ts development && docker compose up --build",
+    "prod": "bun run stop && bun install && bun create-env.ts production && docker compose up --build -d",
+    "clean": "rm -rf node_modules && bun --filter='*' clean"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "typescript": "latest"
   }
 }

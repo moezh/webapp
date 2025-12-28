@@ -4,6 +4,13 @@
   "workspaces": {
     "": {
       "name": "webapp",
+      "devDependencies": {
+        "@types/bun": "latest",
+        "typescript": "latest",
+      },
+    },
+    "workspaces/app": {
+      "name": "@webapp/app",
       "dependencies": {
         "@astrojs/node": "latest",
         "@tailwindcss/vite": "latest",
@@ -12,6 +19,7 @@
       },
       "devDependencies": {
         "@types/bun": "latest",
+        "typescript": "latest",
       },
     },
   },
@@ -267,6 +275,8 @@
     "@types/unist": ["@types/unist@3.0.3", "", {}, "sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q=="],
 
     "@ungap/structured-clone": ["@ungap/structured-clone@1.3.0", "", {}, "sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g=="],
+
+    "@webapp/app": ["@webapp/app@workspace:workspaces/app"],
 
     "acorn": ["acorn@8.15.0", "", { "bin": { "acorn": "bin/acorn" } }, "sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg=="],
 

@@ -1,0 +1,19 @@
+{
+  "name": "@webapp/app",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "prod": "rm -rf dist && astro build && bun ./dist/server/entry.mjs",
+    "clean": "rm -rf .astro dist node_modules"
+  },
+  "dependencies": {
+    "@astrojs/node": "latest",
+    "@tailwindcss/vite": "latest",
+    "astro": "latest",
+    "tailwindcss": "latest"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "latest"
+  }
+}

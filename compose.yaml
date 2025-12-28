@@ -2,6 +2,7 @@ name: webapp-${ENVIRONMENT}
 services:
   app:
     build:
+      context: ./workspaces/app
       target: ${ENVIRONMENT}
     container_name: app-${ENVIRONMENT}
     environment:
@@ -9,23 +10,35 @@ services:
       DATABASE_URL: postgres://postgres:${DB_PASSWORD}@db:5432/database
       ASTRO_TELEMETRY_DISABLED: 1
     volumes:
-      - .:/webapp
-      - nodemodules:/webapp/node_modules
+      - ./workspaces/app:/app
+      - nodemodules:/app/node_modules
     ports:
       - "80:4321"
     depends_on:
       db:
         condition: service_healthy
     restart: unless-stopped
+  worker:
+    build: ./workspaces/worker
+    container_name: worker-${ENVIRONMENT}
+    environment:
+      NODE_ENV: ${ENVIRONMENT}
+      DATABASE_URL: postgres://postgres:${DB_PASSWORD}@db:5432/database
+    volumes:
+      - ./workspaces/worker:/worker
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
   db:
-    image: postgres:18-alpine
+    build:
+      context: ./workspaces/db
     container_name: db-${ENVIRONMENT}
     environment:
       POSTGRES_DB: database
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - ./initdb:/docker-entrypoint-initdb.d
       - pgdata:/var/lib/postgresql
     ports:
       - "5432:5432"
@@ -37,6 +50,6 @@ services:
     restart: unless-stopped
 volumes:
   pgdata:
-    name: pgdata-${ENVIRONMENT}
+    name: db-pgdata-${ENVIRONMENT}
   nodemodules:
-    name: nodemodules-${ENVIRONMENT}
+    name: app-nodemodules-${ENVIRONMENT}
